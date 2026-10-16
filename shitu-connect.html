@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SHITU Connect (DEMO prototype)</title>
+<style>
+:root{--navy:#0b2545;--navy2:#16407a;--green:#1f9d63;--greenbg:#e6f6ee;--bg:#fff;--card:#f4f7fb;--text:#14213d;--muted:#4d5b73;--line:#d8e0ea;--onnavy:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#0a1a33;--navy2:#16407a;--green:#3bc587;--greenbg:#12352a;--bg:#0d1626;--card:#16233a;--text:#eef2f8;--muted:#a9b6cb;--line:#2a3a56}}
+:root[data-theme="dark"]{--navy:#0a1a33;--navy2:#16407a;--green:#3bc587;--greenbg:#12352a;--bg:#0d1626;--card:#16233a;--text:#eef2f8;--muted:#a9b6cb;--line:#2a3a56}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:18px/1.55 "Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:84px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navy);z-index:30}
+h1,h2,h3{font-family:"Bricolage Grotesque","Source Sans 3",system-ui,sans-serif;line-height:1.2;margin:0 0 .5em;color:var(--text)}
+h1{font-size:2rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
+p{margin:0 0 1em}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:var(--onnavy)}
+.bar{max-width:1040px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.3rem;background:none;border:0;color:#fff;padding:0;min-height:48px}
+.lang{display:flex;border:2px solid #ffffff55;border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:#fff;padding:8px 14px;min-height:44px;font-weight:600}
+.lang button[aria-pressed=true]{background:var(--green);color:#fff}
+.topnav{display:none;gap:4px}
+.topnav button,.botnav button{background:none;border:0;color:#fff;font-weight:600;border-radius:10px}
+.topnav button{padding:10px 14px;min-height:48px}
+.topnav button[aria-current=page]{background:#ffffff22;box-shadow:inset 0 -3px 0 var(--green)}
+.botnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--navy);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+.botnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;min-height:56px;padding:6px 2px;color:#c9d6ea}
+.botnav button[aria-current=page]{color:#fff;background:#ffffff1f;box-shadow:inset 0 3px 0 var(--green)}
+.botnav svg{width:24px;height:24px}
+@media(min-width:800px){.topnav{display:flex}.botnav{display:none}body{padding-bottom:24px}}
+.demo{background:#fff4d6;color:#4a3600;border-bottom:2px solid #e6b800;font-size:.95rem;padding:8px 16px;text-align:center}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .demo{background:#3a2f08;color:#ffe9a6}}
+main{max-width:1040px;margin:auto;padding:20px 16px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:20px;padding:28px 22px;margin-bottom:24px;overflow:hidden;position:relative}
+.hero h1{color:#fff;font-size:2.1rem;max-width:16ch}
+.hero p{max-width:46ch;color:#dbe6f6}
+.hero .tag{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:4px 12px;border-radius:999px;margin-bottom:14px;font-size:1rem}
+.hero svg{position:absolute;right:-20px;bottom:-10px;width:220px;opacity:.9}
+@media(max-width:640px){.hero svg{opacity:.25}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:10px 20px;border-radius:12px;border:2px solid var(--navy2);background:var(--navy);color:#fff;font-weight:700}
+.btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.hero .btn.ghost{color:#fff;border-color:#ffffff88}
+.btn[disabled],.btn.done{background:var(--greenbg);color:var(--green);border-color:var(--green);cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card.click{cursor:pointer;text-align:left;width:100%}
+.card.click:hover{border-color:var(--green)}
+.badge{display:inline-block;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:999px;background:#fff4d6;color:#4a3600;border:1px solid #e6b800;vertical-align:middle}
+.pill{display:inline-block;font-size:.9rem;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--greenbg);color:var(--green)}
+.muted{color:var(--muted)}
+.avatar{width:52px;height:52px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-family:"Bricolage Grotesque",sans-serif;flex:none}
+.head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.head h3{margin:0}
+input,select,textarea{width:100%;min-height:50px;padding:10px 14px;border:2px solid var(--line);border-radius:12px;background:var(--bg)}
+label{display:block;font-weight:600;margin:14px 0 6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0;-webkit-overflow-scrolling:touch}
+.chip{flex:none;min-height:44px;padding:6px 16px;border-radius:999px;border:2px solid var(--line);background:var(--bg);font-weight:600}
+.chip[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:8px 0 24px}
+.back{background:none;border:0;color:var(--navy2);font-weight:700;padding:10px 0;min-height:48px}
+:root[data-theme="dark"] .back{color:var(--green)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .back{color:var(--green)}}
+.chat{display:grid;gap:16px}
+@media(min-width:800px){.chat.two{grid-template-columns:320px 1fr}}
+.convo{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;min-height:68px}
+.convo.on{border-color:var(--green);background:var(--greenbg)}
+.bubbles{display:flex;flex-direction:column;gap:8px;padding:12px 0;min-height:200px;max-height:50vh;overflow-y:auto}
+.b{max-width:85%;padding:10px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.b.me{align-self:flex-end;background:var(--navy);color:#fff;border-color:var(--navy)}
+.send{display:flex;gap:8px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--navy);color:#fff;border-left:6px solid var(--green);padding:12px 18px;border-radius:12px;z-index:40;max-width:92vw;box-shadow:0 6px 24px #0005;font-weight:600}
+@media(min-width:800px){.toast{bottom:32px}}
+footer{max-width:1040px;margin:8px auto 0;padding:16px;color:var(--muted);font-size:.9rem}
+@media(prefers-reduced-motion:no-preference){.toast{animation:pop .25s ease-out}@keyframes pop{from{opacity:0;transform:translate(-50%,10px)}}}
+</style></head>
+<body>
+<header><div class="bar">
+<button class="logo" data-a="nav" data-v="home" aria-label="SHITU Connect home"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="9" cy="17" r="6" fill="#fff"/><circle cx="25" cy="17" r="6" fill="#1f9d63"/><path d="M13 17h8" stroke="#0b2545" stroke-width="3" stroke-linecap="round"/></svg>SHITU Connect</button>
+<nav class="topnav" id="topnav" aria-label="Main"></nav>
+<div class="lang" role="group" aria-label="Language"><button data-a="lang" data-v="en" id="l-en">English</button><button data-a="lang" data-v="ha" id="l-ha">Hausa</button></div>
+</div><div class="demo" id="demoBar"></div></header>
+<main id="app"></main>
+<footer id="foot"></footer>
+<nav class="botnav" id="botnav" aria-label="Main"></nav>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script>
+const T={en:{home:"Home",companies:"Companies",opps:"Opportunities",messages:"Messages",profile:"Profile",tag:"Connect Businesses. Create Opportunities.",welcome:"Welcome to SHITU Connect",intro:"Find partners, suppliers and customers for your business in Nigeria and across Africa.",demoBar:"DEMO PROTOTYPE: companies, opportunities and messages are made-up examples. Nothing is sent to anyone.",browse:"Browse companies",seeOpp:"See opportunities",search:"Search companies by name or city",all:"All",connect:"Send connection request",sent:"Request sent (DEMO)",msg:"Send message",back:"Back",interest:"I am interested",interested:"Interest sent (DEMO)",send:"Send",typeMsg:"Type a message",save:"Save profile",saved:"Profile saved on this phone only (DEMO)",featured:"Featured companies",how:"How it works",s1:"Find",s1d:"Search companies by industry or city.",s2:"Connect",s2d:"Send a connection request.",s3:"Grow",s3d:"Chat, share offers and win new business.",none:"No companies match your search.",about:"About",services:"What they offer",industry:"Industry",location:"Location",deadline:"Closing date",type:"Type",yourProfile:"Your profile",name:"Your name",biz:"Business name",bio:"About your business",pick:"Choose a conversation",convoDemo:"DEMO conversation",reply:"This is an automatic DEMO reply. No real person received your message.",connectOk:"DEMO: connection request marked as sent. No real request was sent.",intOk:"DEMO: interest recorded on this screen only.",msgOk:"DEMO: message shown here only.",foot:"SHITU Connect prototype, created by Abdurrazzaq Abubakar Shitu. All data is DEMO.",note:"This prototype has no real login, database or messaging. Your profile is saved only in this browser.",opening:"Opportunities",stats:"DEMO companies",stats2:"DEMO opportunities"},
+ha:{home:"Gida",companies:"Kamfanoni",opps:"Dama",messages:"Saƙonni",profile:"Bayanai",tag:"Haɗa Kasuwanci. Ƙirƙiri Dama.",welcome:"Barka da zuwa SHITU Connect",intro:"Nemi abokan hulɗa, masu kaya da abokan ciniki don kasuwancinka a Najeriya da Afirka.",demoBar:"NAMIJIN GWAJI (DEMO): kamfanoni, dama da saƙonni misalai ne kawai. Ba a aika komai ga kowa ba.",browse:"Duba kamfanoni",seeOpp:"Duba dama",search:"Nemo kamfani da suna ko birni",all:"Duka",connect:"Aika buƙatar haɗin gwiwa",sent:"An aika buƙata (DEMO)",msg:"Aika saƙo",back:"Koma baya",interest:"Ina sha'awa",interested:"An aika sha'awa (DEMO)",send:"Aika",typeMsg:"Rubuta saƙo",save:"Ajiye bayanai",saved:"An ajiye bayanai a wannan wayar kawai (DEMO)",featured:"Kamfanoni zaɓaɓɓu",how:"Yadda yake aiki",s1:"Nema",s1d:"Nemo kamfanoni ta fanni ko birni.",s2:"Haɗawa",s2d:"Aika buƙatar haɗin gwiwa.",s3:"Bunƙasa",s3d:"Yi hira, raba tayi, ka samu sabon kasuwanci.",none:"Babu kamfanin da ya dace da bincikenka.",about:"Game da kamfani",services:"Abin da suke bayarwa",industry:"Fanni",location:"Wuri",deadline:"Ranar rufewa",type:"Nau'i",yourProfile:"Bayananka",name:"Sunanka",biz:"Sunan kasuwanci",bio:"Bayani game da kasuwancinka",pick:"Zaɓi tattaunawa",convoDemo:"Tattaunawar DEMO",reply:"Wannan amsa ce ta kai-tsaye ta DEMO. Babu mutumin da ya karɓi saƙonka.",connectOk:"DEMO: an yi alamar aika buƙata. Ba a aika buƙata ta gaske ba.",intOk:"DEMO: an rubuta sha'awa a wannan allo kawai.",msgOk:"DEMO: saƙon yana nan ne kawai.",foot:"Samfurin SHITU Connect, Abdurrazzaq Abubakar Shitu ne ya ƙirƙira. Duk bayanai DEMO ne.",note:"Wannan samfuri ba shi da shiga ta gaske, ma'ajiyar bayanai ko saƙo na gaske. Ana ajiye bayananka a wannan browser kawai.",opening:"Dama",stats:"Kamfanonin DEMO",stats2:"Damar DEMO"}};
+const IND=["Agriculture","Technology","Logistics","Energy","Finance","Retail","Health","Construction"];
+const IND_HA={Agriculture:"Noma",Technology:"Fasaha",Logistics:"Sufuri",Energy:"Makamashi",Finance:"Kuɗi",Retail:"Ciniki",Health:"Lafiya",Construction:"Gini"};
+const CO=[
+{id:1,n:"Sahel Agro (DEMO)",i:"Agriculture",c:"Kano, Nigeria",d:"Grows and exports sesame, groundnuts and hibiscus to buyers across West Africa.",s:["Bulk sesame supply","Export packaging","Farmer training"]},
+{id:2,n:"Lagos Byte Studio (DEMO)",i:"Technology",c:"Lagos, Nigeria",d:"Builds websites and mobile apps for small and growing businesses.",s:["Website design","Android apps","Digital marketing"]},
+{id:3,n:"Nile Route Logistics (DEMO)",i:"Logistics",c:"Accra, Ghana",d:"Road freight and warehousing between Ghana, Nigeria and Côte d'Ivoire.",s:["Cross-border trucking","Warehousing","Customs support"]},
+{id:4,n:"Arewa Solar Co (DEMO)",i:"Energy",c:"Kaduna, Nigeria",d:"Installs affordable solar systems for shops, clinics and farms.",s:["Solar installation","Battery backup","Maintenance plans"]},
+{id:5,n:"Savanna Pay (DEMO)",i:"Finance",c:"Nairobi, Kenya",d:"Helps traders accept mobile payments and keep simple digital records.",s:["Mobile payments","Bookkeeping tools","Trader training"]},
+{id:6,n:"Harmattan Textiles (DEMO)",i:"Retail",c:"Kano, Nigeria",d:"Wholesale fabrics and ready-made clothing for retailers.",s:["Wholesale fabrics","Custom orders","Nationwide delivery"]},
+{id:7,n:"CareBridge Clinics (DEMO)",i:"Health",c:"Abuja, Nigeria",d:"Community clinics seeking suppliers of medical equipment and supplies.",s:["Primary care","Lab services","Equipment sourcing"]},
+{id:8,n:"Zuma Build Works (DEMO)",i:"Construction",c:"Abuja, Nigeria",d:"Residential and commercial builders looking for material suppliers.",s:["House construction","Renovation","Project management"]}];
+const OP=[
+{id:1,t:"Looking for sesame buyers in Ghana",co:3,ty:"Partnership",l:"Accra, Ghana",dl:"30 Nov 2026"},
+{id:2,t:"Supplier needed: cement and roofing sheets",co:8,ty:"Supplier",l:"Abuja, Nigeria",dl:"15 Dec 2026"},
+{id:3,t:"Solar installer partners for rural clinics",co:4,ty:"Partnership",l:"Kaduna, Nigeria",dl:"20 Nov 2026"},
+{id:4,t:"Website for a wholesale fabric shop",co:6,ty:"Service request",l:"Kano, Nigeria",dl:"05 Dec 2026"},
+{id:5,t:"Medical equipment supply tender",co:7,ty:"Tender",l:"Abuja, Nigeria",dl:"10 Jan 2027"},
+{id:6,t:"Mobile payment pilot for market traders",co:5,ty:"Investment",l:"Nairobi, Kenya",dl:"31 Jan 2027"}];
+const S={lang:"en",view:"home",id:null,q:"",ind:"All",conn:{},intr:{},thread:null,
+convos:{1:[{m:0,x:"Hello! We saw your profile. Are you looking for sesame suppliers? (DEMO message)"}],3:[{m:0,x:"Good day. We can move goods from Kano to Accra in 5 days. (DEMO message)"}],5:[{m:0,x:"Welcome to Savanna Pay. Want a short demo of our tools? (DEMO message)"}]},
+prof:{name:"",biz:"",ind:"Agriculture",loc:"",bio:""}};
+try{const p=JSON.parse(localStorage.getItem("shitu_demo_profile")||"null");if(p)S.prof=Object.assign(S.prof,p)}catch(e){}
+const t=k=>(T[S.lang][k]||T.en[k]||k);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const indL=i=>S.lang==="ha"?(IND_HA[i]||i):i;
+const ini=n=>n.replace(/\(DEMO\)/,"").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+const co=id=>CO.find(c=>c.id===id);
+const ICON={home:'<path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',companies:'<path d="M4 21V5l8-3v19M12 9h8v12M7 8h2M7 12h2M7 16h2M15 13h2M15 17h2"/>',opps:'<path d="M3 8h18v12H3zM9 8V5h6v3M3 13h18"/>',messages:'<path d="M4 4h16v12H8l-4 4z"/>',profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
+const NAV=["home","companies","opps","messages","profile"];
+const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+function navHTML(top){return NAV.map(k=>`<button data-a="nav" data-v="${k}" ${S.view===k||(k==="companies"&&S.view==="company")?'aria-current="page"':""}>${top?"":ico(k)}<span>${t(k)}</span></button>`).join("")}
+let tm;function toast(m){const e=document.getElementById("toast");e.textContent=m;e.hidden=false;clearTimeout(tm);tm=setTimeout(()=>e.hidden=true,3600)}
+function connBtn(id){return S.conn[id]?`<button class="btn done" disabled>✓ ${t("sent")}</button>`:`<button class="btn green" data-a="connect" data-v="${id}">${t("connect")}</button>`}
+function card(c){return `<div class="card click" role="button" tabindex="0" data-a="open" data-v="${c.id}"><div class="head"><div class="avatar">${ini(c.n)}</div><div><h3>${esc(c.n.replace(" (DEMO)",""))} <span class="badge">DEMO</span></h3><span class="muted">${esc(c.c)}</span></div></div><p><span class="pill">${indL(c.i)}</span></p><p class="muted">${esc(c.d)}</p>${connBtn(c.id)}</div>`}
+function listHTML(){const q=S.q.toLowerCase();const r=CO.filter(c=>(S.ind==="All"||c.i===S.ind)&&(c.n+" "+c.c).toLowerCase().includes(q));return r.length?r.map(card).join(""):`<p class="muted">${t("none")}</p>`}
+const V={
+home(){const f=[CO[0],CO[3],CO[2]];return `<section class="hero"><span class="tag">${t("tag")}</span><h1>${t("welcome")}</h1><p>${t("intro")}</p><div class="row"><button class="btn green" data-a="nav" data-v="companies">${t("browse")}</button><button class="btn ghost" data-a="nav" data-v="opps">${t("seeOpp")}</button></div><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M40 110L110 50 180 100M110 50V130M40 110L110 130 180 100" stroke="#ffffff66" stroke-width="3" fill="none"/><circle cx="40" cy="110" r="14" fill="#fff"/><circle cx="110" cy="50" r="18" fill="#1f9d63"/><circle cx="180" cy="100" r="14" fill="#fff"/><circle cx="110" cy="130" r="10" fill="#1f9d63"/></svg></section>
+<h2>${t("how")}</h2><div class="steps"><div class="card"><h3>1. ${t("s1")}</h3><p class="muted">${t("s1d")}</p></div><div class="card"><h3>2. ${t("s2")}</h3><p class="muted">${t("s2d")}</p></div><div class="card"><h3>3. ${t("s3")}</h3><p class="muted">${t("s3d")}</p></div></div>
+<h2>${t("featured")}</h2><div class="grid">${f.map(card).join("")}</div>`},
+companies(){return `<h1>${t("companies")}</h1><label for="q" class="sr" style="margin-top:0">${t("search")}</label><input id="q" type="search" placeholder="${t("search")}" value="${esc(S.q)}" autocomplete="off"><div class="chips" role="group">${["All",...IND].map(i=>`<button class="chip" data-a="ind" data-v="${i}" aria-pressed="${S.ind===i}">${i==="All"?t("all"):indL(i)}</button>`).join("")}</div><div class="grid" id="list">${listHTML()}</div>`},
+company(){const c=co(S.id);return `<button class="back" data-a="nav" data-v="companies">← ${t("back")}</button><div class="card"><div class="head"><div class="avatar">${ini(c.n)}</div><div><h1 style="margin:0;font-size:1.6rem">${esc(c.n.replace(" (DEMO)",""))} <span class="badge">DEMO</span></h1><span class="muted">${esc(c.c)}</span></div></div><p><span class="pill">${indL(c.i)}</span></p><h3>${t("about")}</h3><p>${esc(c.d)}</p><h3>${t("services")}</h3><ul>${c.s.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="row">${connBtn(c.id)}<button class="btn" data-a="chat" data-v="${c.id}">${t("msg")}</button></div></div>`},
+opps(){return `<h1>${t("opps")}</h1><div class="grid">${OP.map(o=>{const c=co(o.co);return `<div class="card"><p><span class="badge">DEMO</span> <span class="pill">${esc(o.ty)}</span></p><h3>${esc(o.t)}</h3><p class="muted">${esc(c.n)}<br>${t("location")}: ${esc(o.l)}<br>${t("deadline")}: ${esc(o.dl)}</p><div class="row">${S.intr[o.id]?`<button class="btn done" disabled>✓ ${t("interested")}</button>`:`<button class="btn green" data-a="int" data-v="${o.id}">${t("interest")}</button>`}<button class="btn ghost" data-a="open" data-v="${c.id}">${t("about")}</button></div></div>`}).join("")}</div>`},
+messages(){const ids=Object.keys(S.convos).map(Number);const th=S.thread;let right=`<div class="card"><p class="muted">${t("pick")}</p></div>`;if(th){const c=co(th);right=`<div class="card"><div class="head"><div class="avatar">${ini(c.n)}</div><div><h3>${esc(c.n.replace(" (DEMO)",""))}</h3><span class="badge">${t("convoDemo")}</span></div></div><div class="bubbles" id="bub">${S.convos[th].map(m=>`<div class="b ${m.m?"me":""}">${esc(m.x)}</div>`).join("")}</div><div class="send"><input id="mi" placeholder="${t("typeMsg")}" aria-label="${t("typeMsg")}" autocomplete="off"><button class="btn green" data-a="send">${t("send")}</button></div></div>`}
+const list=ids.map(id=>{const c=co(id),l=S.convos[id];return `<button class="convo ${th===id?"on":""}" data-a="chat" data-v="${id}"><div class="avatar">${ini(c.n)}</div><div style="min-width:0"><strong>${esc(c.n.replace(" (DEMO)",""))}</strong> <span class="badge">DEMO</span><div class="muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l[l.length-1].x)}</div></div></button>`}).join("");
+if(th&&innerWidth<800)return `<button class="back" data-a="chat" data-v="0">← ${t("back")}</button>${right}`;
+return `<h1>${t("messages")}</h1><div class="chat two"><div>${list}</div><div>${right}</div></div>`},
+profile(){const p=S.prof;return `<h1>${t("yourProfile")}</h1><div class="card"><div class="head"><div class="avatar">${esc((p.name||"?").trim().slice(0,1).toUpperCase())}</div><div><h3>${esc(p.name||"—")}</h3><span class="muted">${esc(p.biz||"")}</span></div></div><p class="muted">${t("note")}</p>
+<label for="p-name">${t("name")}</label><input id="p-name" value="${esc(p.name)}" autocomplete="off"><label for="p-biz">${t("biz")}</label><input id="p-biz" value="${esc(p.biz)}"><label for="p-ind">${t("industry")}</label><select id="p-ind">${IND.map(i=>`<option value="${i}" ${p.ind===i?"selected":""}>${indL(i)}</option>`).join("")}</select><label for="p-loc">${t("location")}</label><input id="p-loc" value="${esc(p.loc)}"><label for="p-bio">${t("bio")}</label><textarea id="p-bio" rows="4">${esc(p.bio)}</textarea><p></p><button class="btn green" data-a="save">${t("save")}</button></div>`}};
+function render(keep){document.documentElement.lang=S.lang==="ha"?"ha":"en";document.getElementById("app").innerHTML=V[S.view]();document.getElementById("topnav").innerHTML=navHTML(true);document.getElementById("botnav").innerHTML=navHTML(false);document.getElementById("demoBar").textContent=t("demoBar");document.getElementById("foot").textContent=t("foot");["en","ha"].forEach(l=>document.getElementById("l-"+l).setAttribute("aria-pressed",S.lang===l));if(!keep)scrollTo(0,0);const b=document.getElementById("bub");if(b)b.scrollTop=b.scrollHeight}
+function go(v,id){S.view=v;if(id)S.id=id;render()}
+function openChat(id){if(id&&!S.convos[id])S.convos[id]=[{m:0,x:"Hello! Thanks for reaching out. (DEMO message)"}];S.thread=id||null;S.view="messages";render(true);const m=document.getElementById("mi");if(m&&id)m.focus()}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el)return;const a=el.dataset.a,v=el.dataset.v,n=+v;
+if(a==="nav")go(v);else if(a==="open"){if(e.target.closest("button[data-a=connect]"))return;go("company",n)}
+else if(a==="connect"){e.stopPropagation();S.conn[n]=1;toast(t("connectOk"));render(true)}
+else if(a==="int"){S.intr[n]=1;toast(t("intOk"));render(true)}
+else if(a==="lang"){S.lang=v;render(true)}
+else if(a==="ind"){S.ind=v;render(true)}
+else if(a==="chat")openChat(n)
+else if(a==="send")sendMsg()
+else if(a==="save"){S.prof={name:document.getElementById("p-name").value,biz:document.getElementById("p-biz").value,ind:document.getElementById("p-ind").value,loc:document.getElementById("p-loc").value,bio:document.getElementById("p-bio").value};try{localStorage.setItem("shitu_demo_profile",JSON.stringify(S.prof))}catch(x){}toast(t("saved"));render(true)}});
+document.addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;document.getElementById("list").innerHTML=listHTML()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"){if(e.target.id==="mi"){e.preventDefault();sendMsg()}else if(e.target.matches(".card.click")){e.target.click()}}});
+function sendMsg(){const i=document.getElementById("mi");if(!i||!i.value.trim())return;const th=S.thread;S.convos[th].push({m:1,x:i.value.trim()});toast(t("msgOk"));render(true);document.getElementById("mi").focus();setTimeout(()=>{S.convos[th].push({m:0,x:t("reply")});if(S.view==="messages"&&S.thread===th)render(true)},1200)}
+render();
+</script></body></html>
